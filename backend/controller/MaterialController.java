@@ -1,13 +1,14 @@
-import com.materialdb.repository.MaterialRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import backend.model.Material;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "https://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 public class MaterialController {
-    @Autowired
-    private MaterialRepository materialRepository;
+    @GetMapping("/materials")
+    public List<Material> getAllMaterials() {
+        return new ArrayList<Material>();
+    }
 }
