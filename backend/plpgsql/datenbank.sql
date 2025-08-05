@@ -12,3 +12,5 @@ Create Table tags (
     id Primary key,
     name varchar(255) not null
 );
+
+

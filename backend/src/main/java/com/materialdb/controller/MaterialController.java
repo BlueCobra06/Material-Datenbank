@@ -1,3 +1,4 @@
+package com.materialdb.controller;
 import backend.model.Material;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

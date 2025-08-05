@@ -1,4 +1,4 @@
-package backend.java.model;
+package com.materialdb.model;
 
 public class Material {
     private Long id;
