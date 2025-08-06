@@ -1,5 +1,9 @@
-CREATE TABLE material (
-    id Primary key,
+\prompt 'Schemaname für Materialdatenbank:' materialdb
+
+CREATE SCHEMA IF NOT EXISTS :materialdb;
+
+CREATE TABLE :materialdb.material (
+    id Serial Primary key,
     name varchar(255) not null,
     description text,
     density varchar(30) not null,
@@ -8,9 +12,9 @@ CREATE TABLE material (
     price varchar(30) not null
 );
 
-Create Table tags (
-    id Primary key,
+Create Table :materialdb.tags (
+    id Serial Primary key,
     name varchar(255) not null
 );
 
-
+\echo 'Datenbanksetup fertig'

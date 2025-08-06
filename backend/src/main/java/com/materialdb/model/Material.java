@@ -1,6 +1,12 @@
 package com.materialdb.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "materials")
 public class Material {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
