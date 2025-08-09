@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Search, Package, Plus, Download, Eye } from 'lucide-react';
+import { Search, Package, Plus, Download, Eye, Filter, Star, Grid, List, Settings, X } from 'lucide-react';
 
 function App() {
   const [materialien, setMaterialien] = useState([]);
   const [searchbar, setSearchbar] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Alle');
+  const [viewMode, setViewMode] = useState('grid');
+  const [favoriten, setFavoriten] = useState(new Set());
+  const [adminpanel, setAdminpanel] = useState(false);
   
 
   useEffect(() => {
@@ -16,9 +20,25 @@ function App() {
       .catch(error => console.error(error));
   }, []);
 
-  const filteredMaterialien = materialien.filter(material =>
-    material.name.toLowerCase().includes(searchbar.toLowerCase())
-  );
+  const categories = ['Alle', ...new Set(materialien.map(material => material.category).filter(Boolean))]
+
+  const filteredMaterialien = materialien.filter(material => {
+    const matchesSearch = material.name.toLowerCase().includes(searchbar.toLowerCase());
+    const matchesCategory = selectedCategory === 'Alle' || material.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const togglefavoriten = (id) => {
+    const newfavoriten = new Set(favoriten);
+    if (newfavoriten.has(id)) {
+      newfavoriten.delete(id);
+    } else {
+      newfavoriten.add(id);
+    }
+    setFavoriten(newfavoriten);
+  }
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -55,35 +75,95 @@ function App() {
                   <Download size={18} />
                   <span>Export</span>
                 </button>
+                <button 
+                  onClick={() => setAdminpanel(true)}
+                  className="bg-red-600 border border-gray-300 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2">
+                  <Settings size={18} />
+                  <span>Admin</span>
+                </button>
               </div>
+              {adminpanel && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                  <div className="bg-white p-6 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-auto">
+                    <div className="flex justify-between items-center mb-6"> 
+                        <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
+                        <Settings className="text-red-600"></Settings>
+                        <span>Admin Panel</span>
+                        </h2>
+                        <button
+                            onClick={() => setAdminpanel(false)}
+                            className="p-2 bg-red-100 hover:bg-red-200 text-red-600 rounded-lg transition-colors" 
+                          >
+                            <X size={20} />
+                          </button>
+                    </div>
+                    </div>
+                </div>
+              )}
             </div>
 
           
-          <div className="mb-6 relative">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Material suchen..."
-              value={searchbar}
+          <div className="bg-gray-50 p-4 rounded-xl mb-6">
+            <div className="flex flex-col lg:flex-row gap-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Material suchen..."
+                  value={searchbar}
               onChange={(e) => setSearchbar(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <Filter className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="pl-10 pr-8 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none bg-white"
+                  >
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex bg-gray-200 rounded-lg p-1">
+                <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded-md transition-colors ${
+                      viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-600'
+                    }`}
+                  >
+                    <Grid size={18} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-md transition-colors ${
+                      viewMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-600'
+                    }`}
+                  >
+                    <List size={18} />
+                  </button>
+                </div>                 
+              </div>
+            </div>
           </div>
         
-        {searchbar.length == 0 && (
+        {filteredMaterialien.length === 0 && searchbar === '' && selectedCategory === 'Alle' && (
           <div className="text-center py-8">
             <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
             <p className="text-gray-600">Keine Materialien gefunden.</p>
           </div>
         )} 
-        {filteredMaterialien.length === 0 && searchbar.length > 0 && (
+        {filteredMaterialien.length === 0 && (searchbar !== '' || selectedCategory !== 'Alle') && (
           <div className="text-center py-8">
             <Package className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-            <p className="text-gray-600">Keine Materialien gefunden für "{searchbar}" gefunden.</p> 
+            <p className="text-gray-600">Keine Materialien gefunden für diesen Filter gefunden</p> 
           </div>
         )}
         
-        {filteredMaterialien.length > 0 && searchbar.length > 0 && (
+        {filteredMaterialien.length > 0 && viewMode === 'grid' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMaterialien.map(material => (
                 <div key={material.id || Math.random()} 
@@ -95,6 +175,16 @@ function App() {
                         {material.name || 'Unbekanntes Material'}
                       </h3>
                     </div>
+                    <button
+                      onClick={() => togglefavoriten(material.id)}
+                      className={`p-2 rounded-lg transition-colors ${
+                        favoriten.has(material.id) 
+                          ? 'text-yellow-500 bg-yellow-50' 
+                          : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'
+                      }`}
+                    >
+                      <Star size={18} fill={favoriten.has(material.id) ? 'currentColor' : 'none'} />
+                    </button>
                   </div>
                   
                   {material.category && (
@@ -132,6 +222,35 @@ function App() {
                     <Eye size={16} />
                     <span>Details anzeigen</span>
                   </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filteredMaterialien.length > 0 && viewMode === 'list' && (
+            <div className="space-y-3">
+              {filteredMaterialien.map(material => (
+                <div key={material.id || Math.random()} 
+                className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all duration-200 flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{material.name || 'Unbekanntes Material'}</h3>
+                      <span className="text-sm text-gray-500">{material.category || 'Unbekannte Kategorie'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => togglefavoriten(material.id)}
+                      className={`p-1 rounded transition-colors ${
+                        favoriten.has(material.id) 
+                          ? 'text-yellow-500' 
+                          : 'text-gray-400 hover:text-yellow-500'
+                      }`}
+                    >
+                      <Star size={16} fill={favoriten.has(material.id) ? 'currentColor' : 'none'} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
