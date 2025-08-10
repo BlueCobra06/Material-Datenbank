@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Package, Plus, Download, Eye, Filter, Star, Grid, List, Settings, X } from 'lucide-react';
+import { Search, Package, Plus, Download, Eye, Filter, Star, Grid, List, Settings, X, Lock } from 'lucide-react';
 
 function App() {
   const [materialien, setMaterialien] = useState([]);
@@ -97,7 +97,18 @@ function App() {
                             <X size={20} />
                           </button>
                     </div>
+                    <div className="text-center">
+                      <Lock className="mx-auto w-12 h-12 text-gray-400 mb-4" />
+                      <h3 className="text-lg font-semibold mb-4">Passwort</h3>
+                      <input type="password" 
+                              placeholder="Passwort" 
+                              className="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-red-500 focus:border-transparent" />
+                    <button onClick={() => setAdminpanel(false)} 
+                            className="bg-red-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-red-700 transition-colors">
+                        Anmelden
+                      </button>
                     </div>
+                  </div>
                 </div>
               )}
             </div>
