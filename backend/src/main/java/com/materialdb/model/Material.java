@@ -18,6 +18,8 @@ public class Material {
     private String tensileStrength;
     private String elasticModulus;
     private String price;
+    private String category;
+    private String applications;
 
     // Konstruktor
     public Material() {}
@@ -43,4 +45,10 @@ public class Material {
     
     public String getPrice() { return price; }
     public void setPrice(String price) { this.price = price; }
+    
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    
+    public String getApplications() { return applications; }
+    public void setApplications(String applications) { this.applications = applications; }
 }
