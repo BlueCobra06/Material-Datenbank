@@ -6,20 +6,22 @@ function App() {
   const [searchbar, setSearchbar] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Alle');
   const [viewMode, setViewMode] = useState('grid');
-  const [favoriten, setFavoriten] = useState(new Set());
   const [adminpanel, setAdminpanel] = useState(false);
   const [details, setDetails] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [loading, setLoading] = useState(true);
   
 
   useEffect(() => {
+    setLoading(true);
     fetch('http://localhost:8080/api/materials')
       .then(response => response.json())
       .then(data => {
         console.log('API Antwort:', data);
         setMaterialien(data);
       })
-      .catch(error => console.error(error));
+      .catch(error => console.error(error))
+      .finally(() => setLoading(false));
   }, []);
 
   const categories = ['Alle', ...new Set((materialien || []).map(material => material.category).filter(Boolean))]
@@ -38,9 +40,13 @@ function App() {
       newfavoriten.add(id);
     }
     setFavoriten(newfavoriten);
+    localStorage.setItem('favoriten', JSON.stringify(Array.from(newfavoriten)));
   }
 
-  
+  const [favoriten, setFavoriten] = useState(() => {
+    const saved = localStorage.getItem('favoriten');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
@@ -52,10 +58,6 @@ function App() {
                 <span className="text-white font-bold text-lg">M</span>
               </div>
               <span className="text-2xl px-4 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Materialdatenbank</span>      
-            </div>
-            <div className="flex items-center space-x-4 mr-4">
-              <a href="#" className="text-indigo-600 text-2xl px-2 hover:text-indigo-800 font-medium transition-colors">Home</a>
-              <a href="#" className="text-gray-600 text-2xl px-2 hover:text-indigo-800 font-medium transition-colors">Dashboard</a>
             </div>
           </div>
         </div>
@@ -69,14 +71,6 @@ function App() {
                 <p className="text-gray-600">{filteredMaterialien.length} Materialien gefunden</p>
               </div>
               <div className="flex items-center space-x-3">
-                <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors flex items-center space-x-2">
-                  <Plus size={18} />
-                  <span>Hinzufügen</span>
-                </button>
-                <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center space-x-2">
-                  <Download size={18} />
-                  <span>Export</span>
-                </button>
                 <button 
                   onClick={() => setAdminpanel(true)}
                   className="bg-red-600 border border-gray-300 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2">
@@ -162,6 +156,14 @@ function App() {
               </div>
             </div>
           </div>
+
+
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4"></div>
+            <span>Materialien werden geladen...</span>
+          </div>
+        )}  
         
         {filteredMaterialien.length === 0 && searchbar === '' && selectedCategory === 'Alle' && (
           <div className="text-center py-8">
@@ -180,7 +182,7 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredMaterialien.map(material => (
                 <div key={material.id || Math.random()} 
-                     className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
+                     className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group h-full flex flex-col">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center">
                       <div className="w-4 h-4 bg-indigo-500 rounded-full mr-3"></div>
@@ -200,7 +202,8 @@ function App() {
                     </button>
                   </div>
                   
-                  {material.category && (
+                  <div className="flex-grow">
+                  {material.category && ( 
                     <span className="inline-block bg-indigo-100 text-indigo-800 text-sm px-3 py-1 rounded-full mb-3">
                       {material.category}
                     </span>
@@ -209,31 +212,11 @@ function App() {
                   {material.description && (
                     <p className="text-gray-600 text-sm mb-4">{material.description}</p>
                   )}
-                  
-                  <div className="space-y-2 text-sm mb-4">
-                    {material.density && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Dichte:</span>
-                        <span className="font-medium">{material.density}</span>
-                      </div>
-                    )}
-                    {material.strength && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Festigkeit:</span>
-                        <span className="font-medium">{material.strength}</span>
-                      </div>
-                    )}
-                    {material.temperature && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">Max. Temp.:</span>
-                        <span className="font-medium">{material.temperature}</span>
-                      </div>
-                    )}
                   </div>
-                  
+                                    
                   <button onClick={() => {
                     setSelectedMaterial(material); setDetails(true);}} 
-                    className="w-full bg-indigo-50 text-indigo-600 py-2 px-4 rounded-lg hover:bg-indigo-100 transition-colors font-medium flex items-center justify-center space-x-2">
+                    className="w-full bg-indigo-50 text-indigo-600 py-2 px-4 rounded-lg hover:bg-indigo-100 transition-colors font-medium flex items-center justify-center space-x-2 mt-auto">
                     <Eye size={16} />
                     <span>Details anzeigen</span>
                   </button>
@@ -257,13 +240,14 @@ function App() {
                   <div>
                     <button
                       onClick={() => togglefavoriten(material.id)}
-                      className={`p-1 rounded transition-colors ${
-                        favoriten.has(material.id) 
-                          ? 'text-yellow-500' 
-                          : 'text-gray-400 hover:text-yellow-500'
-                      }`}
+                      className={`p-4 text-yellow-400 rounded transition-all hover:bg-yellow-100 hover:shadow-md duration-200`}
                     >
                       <Star size={16} fill={favoriten.has(material.id) ? 'currentColor' : 'none'} />
+                    </button>
+                    <button onClick={() => {
+                        setSelectedMaterial(material); setDetails(true);}} 
+                        className="px-4 p-2 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg text-white ml-2 font-medium transition-all duration-200">
+                        Details anzeigen
                     </button>
                   </div>
                 </div>
