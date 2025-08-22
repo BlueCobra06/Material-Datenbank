@@ -56,6 +56,7 @@ const Materialpage = () => {
           filteredMaterialien={filteredMaterialien}
           togglefavoriten={togglefavoriten}
           favoriten={favoriten}
+          viewMode={viewMode}
         />
       </div>
     </div>

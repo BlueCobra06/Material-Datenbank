@@ -17,6 +17,7 @@ CREATE TABLE if not exists :materialdb.material (
     description text,
     density varchar(30) not null,
     tensile_strength varchar(30) not null,
+    tensile_strength_data varchar(30) not null,
     elastic_modulus varchar(30) not null,
     price varchar(30) not null,
     category varchar(30) not null,
