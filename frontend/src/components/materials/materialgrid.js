@@ -71,7 +71,7 @@ const MaterialGrid = ({filteredMaterialien, togglefavoriten, favoriten, setSelec
         
             <div className="flex-grow">
                 {material.category && ( 
-                    <span className={`inline-block bg-gradient-to-br ${getGradient(material.category)} text-indigo-800 text-sm px-3 py-1 rounded-full mb-3 text-white`}>
+                    <span className={`inline-block bg-gradient-to-br ${getGradient(material.category)} text-sm px-3 py-1 rounded-full mb-3 text-white opacity-60`}>
                         {material.category}
                     </span>
                 )}
@@ -87,8 +87,7 @@ const MaterialGrid = ({filteredMaterialien, togglefavoriten, favoriten, setSelec
                     <span className="text-gray-600 text-sm">Festigkeit</span>
                     <div className="flex-1 ml-3 bg-gray-200 rounded-full h-2 overflow-hidden">
                         <div
-                            className={`h-full bg-gradient-to-r rounded-full ${getGradient(material.category)}
-                                        transition-all duration-1000 group-hover:scale-x-110`}
+                            className={`h-full bg-blue-600 rounded-full transition-all duration-1000 group-hover:scale-x-110`}
                             style={{width: `${Math.min(material.tensileStrength / 10, 100)}%`}}
                         ></div>
                     </div>
@@ -100,8 +99,7 @@ const MaterialGrid = ({filteredMaterialien, togglefavoriten, favoriten, setSelec
                     <span className="text-gray-600 text-sm">Elastizitätsmodul</span>
                     <div className="flex-1 ml-3 bg-gray-200 rounded-full h-2 overflow-hidden">
                         <div
-                            className={`h-full bg-gradient-to-r rounded-full ${getGradient(material.category)}
-                                        transition-all duration-1000 group-hover:scale-x-110`}
+                            className={`h-full bg-green-600 rounded-full transition-all duration-1000 group-hover:scale-x-110`}
                             style={{width: `${Math.min(material.elasticModulus / 10, 100)}%`}}
                         ></div>
                     </div>

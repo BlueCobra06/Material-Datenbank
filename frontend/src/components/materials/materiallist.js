@@ -53,7 +53,7 @@ const MaterialList = ({filteredMaterialien, togglefavoriten, favoriten, setSelec
               <div>
                 <h3 className="font-semibold text-gray-900">{material.name || 'Unbekanntes Material'}</h3>
                 <div>
-                  <span className={`text-sm text-white font-semibold bg-gradient-to-br ${getGradient(material.category)} px-2 py-1 rounded-xl opacity-75`}>{material.category || 'Unbekannte Kategorie'}</span>
+                  <span className={`text-sm text-white font-semibold bg-gradient-to-br ${getGradient(material.category)} px-2 py-1 rounded-xl opacity-60`}>{material.category || 'Unbekannte Kategorie'}</span>
                   <span className="text-sm text-white-600 ml-3">{material.description || 'Keine Beschreibung vorhanden'}</span>
                 </div>
               </div>
