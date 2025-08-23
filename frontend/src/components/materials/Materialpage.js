@@ -45,9 +45,7 @@ const Materialpage = () => {
                         </div>
                         {isAuthenticated && (
                             <button
-                                onClick={() => {
-                                    setShowAdminpanel(true);
-                                }}
+                                onClick={() => setShowAdminpanel(true)}
                                 className="bg-red-600 border border-gray-300 text-white font-medium px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
                             >
                                 <span>Admin Panel</span>
@@ -56,33 +54,16 @@ const Materialpage = () => {
                         
                     </div>
             </div>
-      
-            {showAdminpanel && (
-                <Adminpanel 
-                    onClose={() => {
-                        setShowAdminpanel(false);
-                    }}
-                    onLoginSuccess={() => {
-                        handleLogin();
-                    }}
-                />
-            )}
-            
             <Searchbar searchbar={searchbar} setSearchbar={setSearchbar} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={categories} viewMode={viewMode} setViewMode={setViewMode} />
       
             {loading && (<LoadingSpinner />)}  
             
-            {showAdminpanel && isAuthenticated && (
+            {showAdminpanel && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white p-6 rounded-xl max-w-4xl w-full max-h-[80vh] overflow-auto">
                         <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
                         <p>Admin.</p>
-                        <button
-                            onClick={() => setShowAdminpanel(false)}
-                            className="mt-4 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300"
-                        >
-                            Schließen
-                        </button>
+                        <button onClick={() => setShowAdminpanel(false)} className="mt-4 bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">Schließen</button>
                     </div>
                 </div>
             )}
